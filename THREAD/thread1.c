@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
 
 void *Thread1();
 void *Thread2();
@@ -43,7 +44,7 @@ void *Thread1(void* arg)
 
 void *Thread2(void* arg)
 {
-	
+	sleep(4);
 	char ch;
 	printf("\nThe alphabets from a TO z are\n  ");
 	for(ch='a';ch<='z';ch++)
