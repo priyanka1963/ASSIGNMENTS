@@ -10,8 +10,7 @@ struct timespec startTime,stopTime,startTime1,stopTime1 ;
 float secsElapsed,secsElapsed1;
 long long int sum=0;
 
-
-void *function()
+void *function(void *arg)
 
 {
 clock_t startTime = clock();
@@ -29,18 +28,22 @@ for(j; j<=limit; j++)
  if(value>=j)
  {	 
  sum=sum+j;
- printf("j is:%d",j);
+ //printf("j is:%d",j);
 }
 }
 
 
 j=limit+1;
 i++;
+#if DEBUG
 printf("limit is %d ",limit);
 printf("\nsum=%lld\n", sum);
+#endif
 clock_t stopTime = clock();
 float secsElapsed = (float)(stopTime  - startTime)/CLOCKS_PER_SEC;
+#if DEBUG
 printf("Time taken by each thread is %lf\n\n",secsElapsed);
+#endif
 
 
 }
@@ -54,14 +57,15 @@ printf("\n\nstart time:%ld\n\n",startTime1);
  n=atoi(argv[2]);
 
 int count=0;
-pthread_t tid[value];
+pthread_t tid[n];
 
-for(int i=1; i<=n; i++)
+for(int i=0; i<n; i++)
 {
- pthread_create( &tid[count], NULL, &function, NULL);
- pthread_join(tid[count], NULL);
- count++;
-
+ pthread_create( &tid[i], NULL, &function, NULL);
+}
+for(int i=0; i<n; i++)
+{
+ pthread_join(tid[i], NULL);
 }
 clock_t stopTime1 = clock();
 printf("\n\n stopTime1 time:%ld\n\n",stopTime1);
