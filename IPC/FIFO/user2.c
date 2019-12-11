@@ -22,12 +22,12 @@ int main()
 		fd1 = open(myfifo,O_RDONLY); 
 		read(fd1, str1, 80); 
  
-		printf("priya: %s\n", str1); 
+		printf("user1: %s\n", str1); 
 		close(fd1); 
 
 		
 		fd1 = open(myfifo,O_WRONLY); 
-		printf("Tanvi :- ");
+		//printf("user1:- ");
 		fgets(str2, 80, stdin); 
 		write(fd1, str2, strlen(str2)+1); 
 		close(fd1); 

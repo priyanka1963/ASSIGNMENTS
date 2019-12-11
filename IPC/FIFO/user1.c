@@ -23,13 +23,8 @@ int main()
 	{ 
 		 
 		fd = open(myfifo, O_WRONLY); 
-
-		
-		printf("priya:-"); 
+		//printf("%s\n", arr2); 
 		fgets(arr2, 80, stdin); 
-
-		 
-		 
 		write(fd, arr2, strlen(arr2)+1); 
 		close(fd); 
 
@@ -40,7 +35,7 @@ int main()
 		read(fd, arr1, sizeof(arr1)); 
 
 		 
-		printf("Tanvi: %s\n", arr1); 
+		printf("user2: %s\n", arr1); 
 		close(fd); 
 	} 
 	return 0; 
