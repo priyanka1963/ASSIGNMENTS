@@ -11,14 +11,14 @@
 #include <sys/time.h>
 
 #define BUFFER_MAX_SIZE 1024
-#define MAX_CONNCETION 6
+#define MAX_CONNCETION 5
 #define PORT 4000
 
 int client_socket[MAX_CONNCETION];
 static void refresh_fd_set(fd_set *fd_set_ptr)
 {
 	FD_ZERO(fd_set_ptr);
-	for(int i=0;i<MAX_CONNCETION;i++)
+	for(int i=0;i<=MAX_CONNCETION;i++)
 	{
 		if(client_socket[i]!=-1)
 		{
@@ -29,7 +29,7 @@ static void refresh_fd_set(fd_set *fd_set_ptr)
 static int get_max()
 {
 	int max=-1;
-	for(int i=0;i<MAX_CONNCETION;i++)
+	for(int i=0;i<=MAX_CONNCETION;i++)
 	{
 		if(client_socket[i]>max)
 		{
@@ -50,7 +50,7 @@ int main()
 	int count=0;
 	fd_set readfds;
 
-	for(int i=0;i<MAX_CONNCETION;i++)
+	for(int i=0;i<=MAX_CONNCETION;i++)// initialize
 		client_socket[i]=-1;
 
 	master_skt=socket(AF_INET,SOCK_STREAM,0);
@@ -117,12 +117,14 @@ int main()
 			}
 
 			printf("\n\nConnection accepted from client at fd :- %d\n",data_socket);
-			count++;
-			if(count<=MAX_CONNCETION)
+			
+			
+			if(count<MAX_CONNCETION)
 			{
-				printf("count=%d\n",count);
+				count++;
+				printf("count =%d\n",count);
 				int i;
-				for(i=0;i<MAX_CONNCETION;i++)
+				for(i=0;i<=MAX_CONNCETION;i++)
 				{	
 					if(client_socket[i]!=-1)
 						continue;
@@ -130,21 +132,22 @@ int main()
 					break;
 				}
 				printf("New entry at %d is %d\n",i,data_socket);
-
 			}
 			else
 			{
 				memset(data,'\0',BUFFER_MAX_SIZE);
-				sprintf(data,"SERVER IS BUSY\n");
+				sprintf(data,"Server is full\n");
 				write(data_socket,data,BUFFER_MAX_SIZE);
 			}
+			
+
 		}
 		else
 		{
-		
-			for(int i=1;i<MAX_CONNCETION;i++)
-			{	
 			
+			for(int i=0;i<=MAX_CONNCETION;i++)
+			{	
+				
 				if(FD_ISSET(client_socket[i],&readfds))
 				{
 					memset(buffer,'\0',BUFFER_MAX_SIZE);
@@ -155,27 +158,28 @@ int main()
 						perror("read");
 						exit(EXIT_FAILURE);	
 					}
-					
+					printf("\nclient %d:%s",i,buffer);	
 					memset(data,'\0',BUFFER_MAX_SIZE);
 					memcpy(&data,buffer,BUFFER_MAX_SIZE);
-				
-				
+					
+					
 					if(strncmp(data,"exit",4)==0)
 					{
 						printf("COMMUNICATION EXIT\n");
 						close(current_conn);
 						printf("FD close:%d\n",current_conn);
 						client_socket[i]=-1;
-						printf("client_socket[%d]:%d\n\n",i,client_socket[i]);
-					
-					
+						printf("client_socket[%d]:%d\n",i,client_socket[i]);
+						count--;
+						printf("count =%d\n",count);
+						
 					}
 
-					for (int j=1;j<MAX_CONNCETION;j++)
+					for (int j=1;j<=MAX_CONNCETION;j++)
 					{
 						if(client_socket[j]!=current_conn && client_socket[j]!=-1)
 						{
-							sprintf(data,"\nData send by %d client is:",i-1);
+							sprintf(data,"\nclient %d:",i);
 							strcat(data,buffer);
 		 					write(client_socket[j],data,BUFFER_MAX_SIZE);
 						}
@@ -186,7 +190,7 @@ int main()
 			}			
 		}
 	}
-	}
+}
 
 
 
